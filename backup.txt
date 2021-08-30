@@ -1,0 +1,21 @@
+container id : 8448afd4dbc5
+db user : user
+db name : my_pg_db
+
+spefic database:
+
+docker exec -i 8448afd4dbc5 pg_dump  -U user my_pg_db > dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+file created : dump_30-08-2021_10_49_01.sql
+
+cat dump_30-08-2021_10_49_01.sql | docker exec -i 8448afd4dbc5 psql -U user my_pg_db
+
+
+-----------------------------------------------
+
+spefic database zip file:
+
+docker exec -i 8448afd4dbc5 pg_dump  -U user my_pg_db | gzip > dump_`date +%d-%m-%Y"_"%H_%M_%S`.gz
+file created : dump_30-08-2021_11_01_34.gz
+
+gunzip < dump_30-08-2021_11_01_34.gz | docker exec -i 8448afd4dbc5 psql -U user my_pg_db
+
