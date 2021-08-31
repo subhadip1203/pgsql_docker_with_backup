@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  pgsql:
+    build: .
+    container_name: pgsql
+    tty: true
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: my_pg_db
+    ports:
+      - 5432:5432
+    networks:
+      - backup_network
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - backup_network
+
+networks:
+  backup_network:
+
+#docker-compose -f docker-compose.override.yml up --build
+#docker-compose up --build
