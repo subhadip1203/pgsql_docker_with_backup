@@ -6,8 +6,8 @@ services:
     container_name: pgsql
     tty: true
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: MyUser
+      POSTGRES_PASSWORD: MyPassword
       POSTGRES_DB: my_pg_db
     ports:
       - 5432:5432
