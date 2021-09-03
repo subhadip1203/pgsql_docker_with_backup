@@ -1,0 +1,22 @@
+FROM ubuntu:20.04
+
+WORKDIR /myFolder
+COPY ./start.sh /myFolder/start.sh
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata cron nano\
+    && apt-get update \
+    && adduser --system --group --no-create-home appuser \
+    && mkdir /myFolder/test_folder \
+    && chown -R appuser /myFolder \
+    && chmod +x /myFolder/start.sh 
+
+USER appuser
+
+EXPOSE 8085
+
+VOLUME  ["/myFolder/test_folder"]
+
+ENTRYPOINT ["/myFolder/start.sh"]
+
+CMD ["sleep", "infinity"] 

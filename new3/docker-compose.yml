@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  test:
+    build: .
+    container_name: test 
+    volumes:
+      - ./test:/myFolder/test_folder
+    ports:
+      - 8085:8085
