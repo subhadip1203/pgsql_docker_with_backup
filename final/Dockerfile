@@ -23,27 +23,29 @@
 
 
 
-FROM ubuntu:20.04
+FROM pgsql-ubuntu:1.0.0
 
 WORKDIR /myFolder
 COPY ./start.sh /myFolder/start.sh
+COPY ./restart.sh /myFolder/restart.sh
 
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata cron\
-    && apt-get update \
-    && apt-get install -y postgresql postgresql-contrib \
-    && apt-get -y --purge autoremove \
-    && apt-get clean\     
-    && apt-get update \ 
-    && chmod +x /myFolder/start.sh 
-   
+RUN chmod +x /myFolder/start.sh \
+    && chmod +x /myFolder/restart.sh \
+    && mkdir /myFolder/db_backup \
+    && chown -R postgres:postgres /myFolder/db_backup \
+    && echo "* * * * * /myFolder/restart.sh > /proc/1/fd/1 2>&1" >> /etc/cron.d/restart-cron \
+    && crontab -u postgres /etc/cron.d/restart-cron \
+    && chmod u+s /usr/sbin/cron
+
+
 
 USER postgres
  
 EXPOSE 5432
 
 # Add VOLUMEs to allow backup of config, logs and databases
-VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
+VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql" , "/myFolder/db_backup"]
+
 
 ENTRYPOINT ["/myFolder/start.sh"]
 

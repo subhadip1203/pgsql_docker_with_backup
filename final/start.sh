@@ -5,8 +5,8 @@ set -o pipefail
 db_user="$(printenv | grep -E "^POSTGRES_USER" | cut -d "=" -f 2)"
 db_password="$(printenv | grep -E "^POSTGRES_PASSWORD" | cut -d "=" -f 2)"
 db_name="$(printenv | grep -E "^POSTGRES_DB" | cut -d "=" -f 2)"
-cron_time = "$(printenv | grep -E "^POSTGRES_DB"  | sed -e 's/^"//' -e 's/"$//')"
-echo "${cron_time}"
+cron_time="$(printenv | grep -E "^CRON_INTERVAL" | cut -d "=" -f 2)"
+echo "time is : ${cron_time}" 
 
 psql -V
 /etc/init.d/postgresql start
@@ -33,6 +33,28 @@ else
 fi
 
 /etc/init.d/postgresql stop
+
+
+
+echo "Start cron"
+cron
+echo "cron started"
+
+# echo "" >> /etc/cron.d/crontab 
+
+# chmod 0644 /etc/cron.d/crontab 
+# /usr/bin/crontab /etc/cron.d/crontab 
+# cron
+
+### cron jobs 
+# printenv | grep -E "^POSTGRES_" > /etc/cron.d/crontab
+# echo "" >> /etc/cron.d/crontab
+# echo "${cron_time} echo 'HELLO WORLD ...' > /proc/1/fd/1 2>/proc/1/fd/2" >> /etc/cron.d/crontab
+
+# chmod 0644 /etc/cron.d/crontab 
+# /usr/bin/crontab /etc/cron.d/crontab 
+# cron -f
+
 
 exec "$@"
 
