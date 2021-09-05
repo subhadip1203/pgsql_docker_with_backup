@@ -29,17 +29,21 @@ WORKDIR /myFolder
 COPY ./start.sh /myFolder/start.sh
 COPY ./restart.sh /myFolder/restart.sh
 
-RUN chmod +x /myFolder/start.sh \
-    && chmod +x /myFolder/restart.sh \
-    && mkdir /myFolder/db_backup \
-    && chown -R postgres:postgres /myFolder/db_backup \
+RUN usermod -aG root postgres \
+    && chown -R postgres:root /myFolder \
+    && chmod +x /myFolder/start.sh \   
+    && chmod +x /myFolder/restart.sh \  
+    # && mkdir /myFolder/db_backup \
+    # && chgrp -R common /myFolder/db_backup \
+    # && ls -ldh /myFolder/db_backup \
     && echo "* * * * * /myFolder/restart.sh > /proc/1/fd/1 2>&1" >> /etc/cron.d/restart-cron \
     && crontab -u postgres /etc/cron.d/restart-cron \
     && chmod u+s /usr/sbin/cron
 
-
-
 USER postgres
+
+RUN mkdir /myFolder/db_backup \
+    && ls -ldh /myFolder/db_backup 
  
 EXPOSE 5432
 

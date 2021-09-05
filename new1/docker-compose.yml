@@ -9,6 +9,8 @@ services:
       POSTGRES_USER: MyUser
       POSTGRES_PASSWORD: MyPassword
       POSTGRES_DB: my_pg_db
+    volumes: 
+      - ./postgres_data:/var/lib/postgresql/data/]
     ports:
       - 5432:5432
     networks:

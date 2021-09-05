@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  test:
+    build: .
+    container_name: test
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: MyPassword
+      POSTGRES_DB: my_pg_db
+      CRON_INTERVAL: "* * * * *"   
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./pgbackup:/myFolder/test_folder
+    ports:
+      - 5432:5432

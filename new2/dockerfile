@@ -1,0 +1,38 @@
+FROM ubuntu:20.04
+
+WORKDIR /myFolder
+COPY ./start.sh /myFolder/start.sh
+COPY ./restart.sh /myFolder/restart.sh
+COPY ./crontab /myFolder/crontab
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata cron nano\
+    && apt-get update \
+    && apt-get install -y postgresql postgresql-contrib \
+    && apt-get -y --purge autoremove \
+    && apt-get clean\     
+    && apt-get update \
+    # create folder
+    && mkdir /myFolder/test_folder \
+    && chown -R postgres /myFolder \
+    #make executable .sh files
+    && chmod +x /myFolder/start.sh \
+    && chmod +x /myFolder/restart.sh \
+    # cron tabs
+    && echo "* * * * * /myFolder/restart.sh > /proc/1/fd/1 2>&1" >> /etc/cron.d/restart-cron  \
+    && crontab -u postgres /etc/cron.d/restart-cron \
+    && chmod u+s /usr/sbin/cron
+    
+
+USER postgres
+
+EXPOSE 5432
+
+# Add VOLUMEs to allow backup of config, logs and databases
+VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql" , "/myFolder/test_folder"]
+
+
+ENTRYPOINT ["/myFolder/start.sh"]
+
+# Set the default command to run when starting the container
+CMD ["/usr/lib/postgresql/12/bin/postgres", "-D", "/var/lib/postgresql/12/main", "-c", "config_file=/etc/postgresql/12/main/postgresql.conf"]

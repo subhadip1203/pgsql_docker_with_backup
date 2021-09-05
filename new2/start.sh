@@ -34,30 +34,16 @@ fi
 
 /etc/init.d/postgresql stop
 
-whoami
+echo "local all  all             trust" >> /etc/postgresql/12/main/pg_hba.conf
+echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf
 
-ls -ldh /myFolder/db_backup 
+
+# whoami
+
+# ls -ldh /myFolder/test_folder
 
 # echo "Start cron"
-# cron
+cron
 # echo "cron started"
 
-# echo "" >> /etc/cron.d/crontab 
-
-# chmod 0644 /etc/cron.d/crontab 
-# /usr/bin/crontab /etc/cron.d/crontab 
-# cron
-
-### cron jobs 
-# printenv | grep -E "^POSTGRES_" > /etc/cron.d/crontab
-# echo "" >> /etc/cron.d/crontab
-# echo "${cron_time} echo 'HELLO WORLD ...' > /proc/1/fd/1 2>/proc/1/fd/2" >> /etc/cron.d/crontab
-
-# chmod 0644 /etc/cron.d/crontab 
-# /usr/bin/crontab /etc/cron.d/crontab 
-# cron -f
-
-
 exec "$@"
-
-
